@@ -11,12 +11,17 @@ import constants.ForwardConst;
 import constants.JpaConst;
 import services.EmployeeService;
 
-//従業員に関わる処理を行うActionクラス
+/**
+ * 従業員に関わる処理を行うActionクラス
+ *
+ */
 public class EmployeeAction extends ActionBase {
 
     private EmployeeService service;
 
-    //メソッドを実行する
+    /**
+     * メソッドを実行する
+     */
     @Override
     public void process() throws ServletException, IOException {
 
@@ -28,7 +33,11 @@ public class EmployeeAction extends ActionBase {
         service.close();
     }
 
-    //一覧画面を表示する
+    /**
+     * 一覧画面を表示する
+     * @throws ServletException
+     * @throws IOException
+     */
     public void index() throws ServletException, IOException {
 
         //指定されたページ数の一覧画面に表示するデータを取得
@@ -43,11 +52,6 @@ public class EmployeeAction extends ActionBase {
         putRequestScope(AttributeConst.PAGE, page); //ページ数
         putRequestScope(AttributeConst.MAX_ROW, JpaConst.ROW_PER_PAGE); //1ページに表示するレコードの数
 
-
-        System.out.println("emp_cnt:" + employeeCount);             // この行を追加
-        System.out.println("max_row:" + JpaConst.ROW_PER_PAGE);     // この行を追加
-
-
         //セッションにフラッシュメッセージが設定されている場合はリクエストスコープに移し替え、セッションからは削除する
         String flush = getSessionScope(AttributeConst.FLUSH);
         if (flush != null) {
@@ -58,6 +62,20 @@ public class EmployeeAction extends ActionBase {
         //一覧画面を表示
         forward(ForwardConst.FW_EMP_INDEX);
 
+    }
+
+    /**
+     * 新規登録画面を表示する
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void entryNew() throws ServletException, IOException {
+
+        putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
+        putRequestScope(AttributeConst.EMPLOYEE, new EmployeeView()); //空の従業員インスタンス
+
+        //新規登録画面を表示
+        forward(ForwardConst.FW_EMP_NEW);
     }
 
 }
